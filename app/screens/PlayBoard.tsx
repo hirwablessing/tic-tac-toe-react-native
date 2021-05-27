@@ -1,29 +1,172 @@
-import React from "react";
+import React, { ReactElement } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { ButtonProps } from "../../utils/types";
 import CustomButton from "../components/CustomButton";
+import Square from "../components/Square";
 
-export default function PlayBoard() {
+interface Props {}
+
+interface Square {
+  id: number;
+  selected?: any;
+}
+
+function PlayBoard({}: Props): ReactElement {
+  const [users, setusers] = React.useState([
+    { id: 1, name: "James" },
+    { id: 2, name: "Lisa" },
+  ]);
+  const [turn, setTurn] = React.useState(users[0].id);
+  const [won, setWon] = React.useState(false);
+
+  let currentTurn = users.find((el) => el.id === turn)?.name;
+  let winner = won && users.find((el) => el.id === turn)?.name;
+
+  const props: ButtonProps = {
+    bgColor: "#FFF",
+    buttonVh: "5%",
+    buttonVw: "7%",
+    buttonPadding: 15,
+    buttonWidth: 395,
+    buttonHeight: 109,
+    buttonBorderWidth: 2,
+    buttonRadius: 24,
+    title: `Turn: ${currentTurn}`,
+  };
+
+  const [squares, setSquares] = React.useState<Array<Square>>([
+    { id: 1, selected: null },
+    { id: 2, selected: null },
+    { id: 3, selected: null },
+    { id: 4, selected: null },
+    { id: 5, selected: null },
+    { id: 6, selected: null },
+    { id: 7, selected: null },
+    { id: 8, selected: null },
+    { id: 9, selected: null },
+  ]);
+
+  const winOptions = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9],
+    [1, 4, 7],
+    [2, 5, 8],
+    [3, 6, 9],
+    [3, 5, 7],
+    [1, 5, 9],
+  ];
+
+  const nextTurn = () => {
+    setTurn(turn === 1 ? 2 : 1);
+  };
+
+  const clickSquare = (id: number) => {
+    if (won) {
+      alert("Game completed");
+      return;
+    }
+    let played = false;
+    const tempSquares = squares.map((square) => {
+      if (square.id === id) {
+        if (!square.selected) {
+          square.selected = turn;
+          played = true;
+        } else {
+          alert("Choose another square");
+        }
+      }
+      return square;
+    });
+    setSquares(tempSquares);
+    if (played) nextTurn();
+  };
+
+  function isSubsetOf(set: Array<any>, subset: Array<any>) {
+    let mixedSet = new Set([...set, ...subset]);
+    let isSubset = mixedSet.size == set.length;
+    return isSubset;
+  }
+
+  const resetGame = () => {
+    setWon(false);
+    let newArr = [...squares];
+    for (let i = 0; i < newArr.length; i++) {
+      newArr[i].selected = null;
+    }
+    // let newArr = squares.map((square) => (square.selected = null));
+    setSquares(newArr);
+  };
+
+  React.useEffect(() => {
+    //checking player win
+    for (let i = 0; i < users.length; i++) {
+      const player = users[i];
+      const playerSelections = squares.filter(
+        (sq) => sq.selected === player.id
+      );
+      if (playerSelections.length < 3) continue;
+      let playerWon = false;
+      for (let index = 0; index < winOptions.length; index++) {
+        const option = winOptions[index];
+        let newPlayerSelections = playerSelections.map((sel) => sel.id);
+        if (isSubsetOf(newPlayerSelections, option)) {
+          playerWon = true;
+        }
+      }
+      if (playerWon) {
+        setWon(true);
+        alert("player " + turn + " won");
+      }
+    }
+
+    //checking draw
+    if (!won) {
+      let draw = squares.every((sq) => sq.selected);
+      if (draw) {
+        setWon(true);
+        alert("players draw");
+      }
+    }
+  }, [squares]);
+
   return (
-    <View style={styles.container}>
-      <CustomButton
-        bgColor={"#FFF"}
-        buttonVh={"30%"}
-        buttonVw={"7%"}
-        buttonPadding={15}
-        buttonWidth={395}
-        buttonHeight={109}
-        buttonBorderWidth={2}
-        buttonRadius={24}
-        title={"Turn"}
-        onPress={() => console.log("here")}
-      />
+    <View style={styles.board}>
+      <CustomButton {...props} title={`Turn: ${currentTurn}`} />
+      {squares.map((square) => {
+        return (
+          <React.Fragment key={square.id}>
+            <Square onClick={clickSquare} {...square}></Square>
+          </React.Fragment>
+        );
+      })}
+      <CustomButton {...props} title={`Winner: ${winner || "?"}`} />
+      <View style={styles.board__reset}>
+        <Text style={{ color: "#fff" }} onPress={resetGame}>
+          New Game
+        </Text>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FAEFE3",
+  board: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  board__reset: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#4643D3",
+    width: 168,
+    height: 57,
+    borderRadius: 29,
   },
 });
+
+export default PlayBoard;
