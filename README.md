@@ -2,6 +2,6 @@
 Front Work Interview Project
 Tic tac toe mobile game
 
-<div style="text-align:center">
-![image](https://user-images.githubusercontent.com/50826640/119991257-8d9adb80-bfc9-11eb-9d83-5129c089c9d6.png)
-</div>
+<p style="text-align:center">
+  ![image](https://user-images.githubusercontent.com/50826640/119991257-8d9adb80-bfc9-11eb-9d83-5129c089c9d6.png)
+</p>
