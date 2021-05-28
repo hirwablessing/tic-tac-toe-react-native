@@ -82,44 +82,24 @@ function PlayBoard({}: Props): ReactElement {
     if (played) nextTurn();
   };
 
-  function isSubsetOf(set: Array<any>, subset: Array<any>) {
+  const isSubsetOf = (set: Array<any>, subset: Array<any>) => {
     let mixedSet = new Set([...set, ...subset]);
     let isSubset = mixedSet.size == set.length;
     return isSubset;
-  }
+  };
 
   const resetGame = () => {
     setWon(false);
     let newArr = [...squares];
-    for (let i = 0; i < newArr.length; i++) {
+    let i = 0;
+    for (i; i < newArr.length; i++) {
       newArr[i].selected = null;
     }
     // let newArr = squares.map((square) => (square.selected = null));
     setSquares(newArr);
   };
 
-  React.useEffect(() => {
-    //checking player win
-    for (let i = 0; i < users.length; i++) {
-      const player = users[i];
-      const playerSelections = squares.filter(
-        (sq) => sq.selected === player.id
-      );
-      if (playerSelections.length < 3) continue;
-      let playerWon = false;
-      for (let index = 0; index < winOptions.length; index++) {
-        const option = winOptions[index];
-        let newPlayerSelections = playerSelections.map((sel) => sel.id);
-        if (isSubsetOf(newPlayerSelections, option)) {
-          playerWon = true;
-        }
-      }
-      if (playerWon) {
-        setWon(true);
-        alert("player " + turn + " won");
-      }
-    }
-
+  const checkDraw = () => {
     //checking draw
     if (!won) {
       let draw = squares.every((sq) => sq.selected);
@@ -128,6 +108,44 @@ function PlayBoard({}: Props): ReactElement {
         alert("players draw");
       }
     }
+  };
+
+  const getWinnerPlayer = (playerWonFlag: Boolean) => {
+    if (playerWonFlag) {
+      setWon(true);
+      alert("player " + turn + " won");
+    }
+  };
+
+  React.useEffect(() => {
+    const checkWinner = () => {
+      //checking player winning status
+      let i = 0;
+      for (i; i < users.length; i++) {
+        const player = users[i];
+        const playerSelections = squares.filter(
+          (sq) => sq.selected === player.id
+        );
+
+        if (playerSelections.length < 3) continue;
+        let playerWonFlag = false;
+        let index = 0;
+
+        for (index; index < winOptions.length; index++) {
+          const option = winOptions[index];
+          let newPlayerSelections = playerSelections.map((sel) => sel.id);
+          if (isSubsetOf(newPlayerSelections, option)) {
+            playerWonFlag = true;
+          }
+        }
+
+        getWinnerPlayer(playerWonFlag);
+      }
+
+      checkDraw();
+    };
+
+    checkWinner();
   }, [squares]);
 
   return (
