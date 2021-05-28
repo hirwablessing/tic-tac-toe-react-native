@@ -12,15 +12,15 @@ interface Square {
 }
 
 function PlayBoard({}: Props): ReactElement {
-  const [users, setusers] = React.useState([
+  const [players, setplayers] = React.useState([
     { id: 1, name: "James" },
     { id: 2, name: "Lisa" },
   ]);
-  const [turn, setTurn] = React.useState(users[0].id);
+  const [turn, setTurn] = React.useState(players[0].id);
   const [won, setWon] = React.useState(false);
 
-  let currentTurn = users.find((el) => el.id === turn)?.name;
-  let winner = won && users.find((el) => el.id === turn)?.name;
+  let currentTurn = players.find((el) => el.id === turn)?.name;
+  let winner = won && players.find((el) => el.id === turn)?.name;
 
   const props: ButtonProps = {
     bgColor: "#FFF",
@@ -121,8 +121,8 @@ function PlayBoard({}: Props): ReactElement {
     const checkWinner = () => {
       //checking player winning status
       let i = 0;
-      for (i; i < users.length; i++) {
-        const player = users[i];
+      for (i; i < players.length; i++) {
+        const player = players[i];
         const playerSelections = squares.filter(
           (sq) => sq.selected === player.id
         );
