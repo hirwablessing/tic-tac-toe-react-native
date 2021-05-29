@@ -1,5 +1,6 @@
 import React, { ReactElement } from "react";
 import { StyleSheet, Text, View } from "react-native";
+
 import { ButtonProps, Props, Squares } from "../../utils/types";
 import CustomButton from "../components/CustomButton";
 import Square from "../components/Square";
