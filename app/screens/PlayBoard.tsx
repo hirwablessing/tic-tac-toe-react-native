@@ -60,12 +60,13 @@ function PlayBoard({}: Props): ReactElement {
       alert("Game completed");
       return;
     }
-    let played = false;
+
+    let isPlayed = false;
     const tempSquares = squares.map((square) => {
       if (square.id === id) {
         if (!square.selected) {
           square.selected = turn;
-          played = true;
+          isPlayed = true;
         } else {
           alert("Choose another square");
         }
@@ -73,7 +74,8 @@ function PlayBoard({}: Props): ReactElement {
       return square;
     });
     setSquares(tempSquares);
-    if (played) nextTurn();
+
+    isPlayed && nextTurn();
   };
 
   const isSubsetOf = (set: Array<any>, subset: Array<any>) => {
@@ -89,7 +91,7 @@ function PlayBoard({}: Props): ReactElement {
     for (i; i < newArr.length; i++) {
       newArr[i].selected = null;
     }
-    // let newArr = squares.map((square) => (square.selected = null));
+
     setSquares(newArr);
   };
 
