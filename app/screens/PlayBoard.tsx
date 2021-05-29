@@ -1,21 +1,15 @@
 import React, { ReactElement } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { ButtonProps } from "../../utils/types";
+import { ButtonProps, Props, Squares } from "../../utils/types";
 import CustomButton from "../components/CustomButton";
 import Square from "../components/Square";
 
-interface Props {}
-
-interface Square {
-  id: number;
-  selected?: any;
-}
-
 function PlayBoard({}: Props): ReactElement {
-  const [players, setplayers] = React.useState([
+  const players = [
     { id: 1, name: "James" },
     { id: 2, name: "Lisa" },
-  ]);
+  ];
+
   const [turn, setTurn] = React.useState(players[0].id);
   const [won, setWon] = React.useState(false);
 
@@ -34,7 +28,7 @@ function PlayBoard({}: Props): ReactElement {
     title: `Turn: ${currentTurn}`,
   };
 
-  const [squares, setSquares] = React.useState<Array<Square>>([
+  const [squares, setSquares] = React.useState<Array<Squares>>([
     { id: 1, selected: null },
     { id: 2, selected: null },
     { id: 3, selected: null },
@@ -113,7 +107,7 @@ function PlayBoard({}: Props): ReactElement {
   const getWinnerPlayer = (playerWonFlag: Boolean) => {
     if (playerWonFlag) {
       setWon(true);
-      alert("player " + turn + " won");
+      alert(`player 2 (${winner})  won`);
     }
   };
 

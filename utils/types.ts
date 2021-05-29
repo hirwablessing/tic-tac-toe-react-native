@@ -12,3 +12,10 @@ export interface ButtonProps {
   btnTextColor?: string;
   onPress?: any;
 }
+
+export interface Props {}
+
+export interface Squares {
+  id: number;
+  selected?: any;
+}
